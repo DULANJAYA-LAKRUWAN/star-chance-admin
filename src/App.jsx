@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
-const BASE_URL = 'http://localhost:7747';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:7747';
 const ADMIN_API = `${BASE_URL}/admin`;
 
 const Modal = ({ isOpen, onClose, title, children, width = '500px' }) => {
