@@ -91,8 +91,8 @@ const DashboardPage = () => {
 
   if (error) {
     return (
-      <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <Badge variant="error" style={{ padding: '1rem', fontSize: '1rem' }}>
+      <div className="dashboard-empty-state">
+        <Badge variant="error" className="status-badge status-badge-large">
           Failed to load dashboard: {error}
         </Badge>
       </div>
@@ -100,25 +100,20 @@ const DashboardPage = () => {
   }
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: 0, color: 'var(--text-main)' }}>
-          Overview
-        </h1>
-        <Badge variant={sseConnected ? 'success' : 'error'} style={{ padding: '0.5rem 1rem' }}>
-          <span style={{ 
-            width: '8px', 
-            height: '8px', 
-            borderRadius: '50%', 
-            background: 'currentColor',
-            marginRight: '8px',
-            boxShadow: sseConnected ? '0 0 8px currentColor' : 'none'
-          }} />
+    <div className="dashboard-page">
+      <div className="dashboard-header">
+        <div>
+          <h1 className="page-title">Overview</h1>
+          <p className="page-subtitle">Monitor revenue, ticket sales, and live system activity from a single executive dashboard.</p>
+        </div>
+
+        <Badge variant={sseConnected ? 'success' : 'error'} className="status-badge">
+          <span className={`status-dot ${sseConnected ? 'status-dot-live' : ''}`} />
           {sseConnected ? 'Live Sync Active' : 'Live Sync Disconnected'}
         </Badge>
       </div>
-      
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+
+      <div className="dashboard-stat-grid">
         <StatCard 
           title="Total Revenue" 
           value={`LKR ${stats?.totalRevenue?.toLocaleString() || 0}`} 
@@ -141,10 +136,10 @@ const DashboardPage = () => {
         />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem' }}>
-        <Card style={{ gridColumn: 'span 2' }}>
+      <div className="dashboard-main-grid">
+        <Card className="dashboard-chart-card">
           <CardHeader title="Revenue Over Time" />
-          <CardBody style={{ height: '350px', padding: '1.5rem 0' }}>
+          <CardBody className="dashboard-chart-body">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={stats?.chartData || []} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                 <defs>
@@ -171,34 +166,26 @@ const DashboardPage = () => {
           </CardBody>
         </Card>
 
-        <Card style={{ display: 'flex', flexDirection: 'column' }}>
+        <Card className="dashboard-activity-card">
           <CardHeader 
             title={
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <Bell size={18} color="var(--accent)" /> Live Activity
+              <div className="activity-header">
+                <Bell size={18} color="var(--accent)" />
+                Live Activity
               </div>
             } 
           />
-          <CardBody style={{ flex: 1, overflowY: 'auto', maxHeight: '400px', padding: 0 }}>
+          <CardBody className="activity-body">
             {activities.length === 0 ? (
-              <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+              <div className="activity-empty">
                 Waiting for activity...
               </div>
             ) : (
-              <ul style={{ listStyle: 'none' }}>
+              <ul className="activity-list">
                 {activities.map((act, i) => (
-                  <li 
-                    key={`${act.id}-${i}`} 
-                    style={{ 
-                      padding: '1rem 1.5rem', 
-                      borderBottom: '1px solid var(--border-subtle)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '0.25rem'
-                    }}
-                  >
-                    <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-main)' }}>{act.msg}</span>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{act.time}</span>
+                  <li key={`${act.id}-${i}`} className="activity-item">
+                    <span className="activity-message">{act.msg}</span>
+                    <span className="activity-time">{act.time}</span>
                   </li>
                 ))}
               </ul>

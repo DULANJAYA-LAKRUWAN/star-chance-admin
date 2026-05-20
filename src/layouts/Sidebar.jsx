@@ -31,141 +31,50 @@ const Sidebar = ({ isOpen, toggleSidebar, isCollapsed, onCollapseToggle }) => {
   return (
     <>
       {/* Mobile Backdrop */}
-      {isOpen && (
-        <div 
-          className="modal-overlay" 
-          style={{ zIndex: 40 }}
-          onClick={toggleSidebar} 
-        />
-      )}
+{isOpen && <div className="modal-overlay sidebar-backdrop" onClick={toggleSidebar} />}
 
-      <aside className={`sidebar ${isOpen ? 'open' : ''} ${isCollapsed ? 'collapsed' : ''}`} style={{ position: 'relative' }}>
-        {/* Desktop Floating Toggle Button */}
-        <button
-          onClick={onCollapseToggle}
-          className="desktop-toggle-btn btn-icon"
-          style={{
-            position: 'absolute',
-            right: '-12px',
-            top: '24px',
-            width: '24px',
-            height: '24px',
-            borderRadius: '50%',
-            background: 'var(--bg-surface)',
-            border: '1px solid var(--border-light)',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            zIndex: 100,
-            boxShadow: 'var(--shadow-sm)',
-            color: 'var(--text-secondary)',
-            padding: 0
-          }}
-          title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-        >
-          {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
-        </button>
-
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: isCollapsed ? 'center' : 'space-between', 
-          padding: '1.5rem', 
-          borderBottom: '1px solid var(--border-subtle)',
-          minHeight: '72px'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-main)' }}>
-            <div style={{ background: 'var(--accent)', color: 'white', padding: '0.5rem', borderRadius: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <aside className={`sidebar ${isOpen ? 'open' : ''} ${isCollapsed ? 'collapsed' : ''}`}>
+        <div className="sidebar-header">
+          <div className="brand">
+            <div className="brand-icon">
               <Ticket size={24} />
             </div>
-            {!isCollapsed && (
-              <span className="sidebar-text" style={{ fontSize: '1.25rem', fontWeight: 700, letterSpacing: '-0.02em' }}>
-                Star Chance
-              </span>
-            )}
+            {!isCollapsed && <span className="brand-title">Star Chance</span>}
           </div>
-          
-          {!isCollapsed && (
-            <button 
-              className="btn-icon" 
-              onClick={toggleSidebar}
-              style={{ display: window.innerWidth <= 1024 ? 'flex' : 'none' }}
-            >
-              <X size={20} />
-            </button>
-          )}
+
+          <button type="button" className="sidebar-close-btn btn-icon" onClick={toggleSidebar} aria-label="Close navigation">
+            <X size={20} />
+          </button>
         </div>
-        
-        <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem', padding: isCollapsed ? '1rem 0.5rem' : '1rem' }}>
+
+        <nav className="sidebar-nav">
           {links.map((link) => (
             <NavLink
               key={link.name}
               to={link.path}
-              onClick={() => { if(window.innerWidth <= 1024) toggleSidebar() }}
-              className="nav-link-item"
-              style={({ isActive }) => ({
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: isCollapsed ? 'center' : 'flex-start',
-                gap: isCollapsed ? '0' : '0.75rem',
-                padding: '0.75rem 1rem',
-                borderRadius: 'var(--radius-md)',
-                color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
-                background: isActive ? 'var(--accent-subtle)' : 'transparent',
-                fontWeight: isActive ? 600 : 500,
-                textDecoration: 'none',
-                transition: 'all var(--transition-fast)',
-                position: 'relative'
-              })}
+              onClick={() => { if (window.innerWidth <= 1024) toggleSidebar(); }}
+              className={({ isActive }) => `nav-link-item${isActive ? ' active' : ''}`}
               title={isCollapsed ? link.name : ''}
-              onMouseEnter={(e) => {
-                if (!e.currentTarget.style.background.includes('subtle')) {
-                  e.currentTarget.style.background = 'var(--bg-surface-hover)';
-                  e.currentTarget.style.color = 'var(--text-main)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!e.currentTarget.classList.contains('active')) {
-                  e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.color = 'var(--text-secondary)';
-                }
-              }}
             >
-              {link.icon}
-              {!isCollapsed && <span className="sidebar-text">{link.name}</span>}
+              <span className="nav-icon">{link.icon}</span>
+              {!isCollapsed && <span className="nav-label">{link.name}</span>}
             </NavLink>
           ))}
-          
-          <div 
-            onClick={logout} 
-            className="nav-link-item"
-            style={{
-              marginTop: 'auto',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: isCollapsed ? 'center' : 'flex-start',
-              gap: isCollapsed ? '0' : '0.75rem',
-              padding: '0.75rem 1rem',
-              borderRadius: 'var(--radius-md)',
-              color: 'var(--text-muted)',
-              cursor: 'pointer',
-              fontWeight: 500,
-              transition: 'all var(--transition-fast)'
-            }}
-            title={isCollapsed ? 'Sign Out' : ''}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'var(--error-bg)';
-              e.currentTarget.style.color = 'var(--error)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent';
-              e.currentTarget.style.color = 'var(--text-muted)';
-            }}
-          >
-            <LogOut size={20} />
-            {!isCollapsed && <span className="sidebar-text">Sign Out</span>}
-          </div>
+
+          <button type="button" className={`nav-link-item sign-out${isCollapsed ? ' centered' : ''}`} onClick={logout}>
+            <span className="nav-icon"><LogOut size={20} /></span>
+            {!isCollapsed && <span className="nav-label">Sign Out</span>}
+          </button>
         </nav>
+
+        <button
+          type="button"
+          className="sidebar-collapse-toggle btn-icon"
+          onClick={onCollapseToggle}
+          aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+        </button>
       </aside>
     </>
   );

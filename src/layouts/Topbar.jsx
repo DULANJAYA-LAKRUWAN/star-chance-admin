@@ -10,58 +10,31 @@ const Topbar = ({ toggleSidebar }) => {
 
   return (
     <header className="topbar">
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        {/* Only show hamburger on mobile/tablet */}
+      <div className="topbar-start">
         <button 
-          className="btn-icon" 
+          type="button"
+          className="topbar-menu btn-icon" 
           onClick={toggleSidebar}
-          style={{ display: window.innerWidth <= 1024 ? 'flex' : 'none' }}
-          title="Open Menu"
+          title="Open menu"
         >
-          <Menu size={24} color="var(--text-main)" />
+          <Menu size={24} />
         </button>
+        <span className="topbar-title">Admin Console</span>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+      <div className="topbar-actions">
         <ThemeToggle />
-        
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', borderLeft: '1px solid var(--border-subtle)', paddingLeft: '1.5rem' }}>
-          <div style={{ textAlign: 'right' }}>
-            <p style={{ margin: 0, fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-main)' }}>
-              {user.userName || user.name || 'Admin'}
-            </p>
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px',
-                fontSize: '0.7rem',
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                color: 'var(--accent)',
-                marginTop: '2px',
-              }}
-            >
+
+        <div className="profile-card">
+          <div className="profile-details">
+            <p className="profile-name">{user.userName || user.name || 'Admin'}</p>
+            <span className="profile-role">
               <Shield size={10} />
               {user.role}
             </span>
           </div>
-          
-          <div
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: 'var(--radius-lg)',
-              background: 'var(--accent)',
-              color: 'var(--text-inverse)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 800,
-              fontSize: '1rem',
-              boxShadow: 'var(--shadow-sm)'
-            }}
-          >
+
+          <div className="profile-avatar">
             {(user.userName || user.name || 'A').charAt(0).toUpperCase()}
           </div>
         </div>

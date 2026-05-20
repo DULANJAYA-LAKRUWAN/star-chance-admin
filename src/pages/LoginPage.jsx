@@ -50,20 +50,18 @@ const LoginPage = () => {
           <div className="admin-badge">
             <Shield size={14} /> SECURE ADMIN PORTAL
           </div>
-          <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: '0.5rem 0', color: 'var(--text-main)' }}>
-            Welcome Back
-          </h1>
-          <p style={{ color: 'var(--text-secondary)' }}>Sign in to manage the Star Chance platform</p>
+          <h1 className="login-title">Welcome Back</h1>
+          <p className="login-subtitle">Sign in to manage the Star Chance platform</p>
         </div>
 
         {error && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--error-bg)', color: 'var(--error)', padding: '1rem', borderRadius: 'var(--radius-md)', marginBottom: '1.5rem', fontSize: '0.875rem', fontWeight: 500 }}>
+          <div className="form-alert error">
             <AlertCircle size={18} />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <form onSubmit={handleSubmit} className="auth-form">
           <Input
             type="email"
             placeholder="admin@starchance.com"
@@ -74,7 +72,7 @@ const LoginPage = () => {
             icon={Shield}
           />
 
-          <div style={{ position: 'relative' }}>
+          <div className="password-field">
             <Input
               type={showPassword ? 'text' : 'password'}
               placeholder="Administrator Password"
@@ -87,22 +85,20 @@ const LoginPage = () => {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex' }}
+              className="password-toggle"
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Link 
-              to="/forgot-password" 
-              style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--accent)', textDecoration: 'none' }}
-            >
+          <div className="form-footer">
+            <Link to="/forgot-password" className="link-secondary">
               Forgot Password?
             </Link>
           </div>
 
-          <Button type="submit" isLoading={loading} style={{ width: '100%', padding: '0.875rem' }}>
+          <Button type="submit" isLoading={loading} className="full-width-btn">
             Authorize Access
           </Button>
         </form>

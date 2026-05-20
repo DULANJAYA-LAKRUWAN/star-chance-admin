@@ -22,25 +22,8 @@ const PrivateRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-          background: 'var(--bg-app)',
-        }}
-      >
-        <div
-          className="animate-spin"
-          style={{
-            width: '40px',
-            height: '40px',
-            border: '4px solid var(--accent)',
-            borderTopColor: 'transparent',
-            borderRadius: '50%',
-          }}
-        />
+      <div className="page-loader">
+        <div className="loader-ring" />
       </div>
     );
   }
@@ -53,25 +36,8 @@ const PublicRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-          background: 'var(--bg-app)',
-        }}
-      >
-        <div
-          className="animate-spin"
-          style={{
-            width: '40px',
-            height: '40px',
-            border: '4px solid var(--accent)',
-            borderTopColor: 'transparent',
-            borderRadius: '50%',
-          }}
-        />
+      <div className="page-loader">
+        <div className="loader-ring" />
       </div>
     );
   }

@@ -11,31 +11,26 @@ export const Input = forwardRef(({
   const inputId = id || Math.random().toString(36).substr(2, 9);
 
   return (
-    <div className={`input-wrapper ${className}`} style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem', width: '100%' }}>
+    <div className={`input-wrapper ${className}`}>
       {label && (
-        <label htmlFor={inputId} style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+        <label htmlFor={inputId} className="input-label">
           {label}
         </label>
       )}
-      <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+      <div className={`input-field-group ${Icon ? 'with-icon' : ''}`}>
         {Icon && (
-          <div style={{ position: 'absolute', left: '1rem', color: 'var(--text-muted)', pointerEvents: 'none', display: 'flex' }}>
+          <div className="input-icon">
             <Icon size={18} />
           </div>
         )}
         <input
           id={inputId}
           ref={ref}
-          className="input-field"
-          style={{ paddingLeft: Icon ? '2.75rem' : '1rem', borderColor: error ? 'var(--error)' : undefined }}
+          className={`input-field ${error ? 'input-error' : ''}`}
           {...props}
         />
       </div>
-      {error && (
-        <span style={{ fontSize: '0.75rem', color: 'var(--error)', fontWeight: 500, marginTop: '2px' }}>
-          {error}
-        </span>
-      )}
+      {error && <span className="input-error-text">{error}</span>}
     </div>
   );
 });
