@@ -1,14 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { drawService } from '../services/draw.service';
 import { analyticsService } from '../services/analytics.service';
-import { Play, Plus, Loader, Trash2, Calendar } from 'lucide-react';
+import { Play, Plus, Loader, Trash2, Calendar, DollarSign, Ticket, Trophy } from 'lucide-react';
 import { Card, CardHeader, CardBody } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
+import { Modal } from '../components/ui/Modal';
+import { Input } from '../components/ui/Input';
+
+const getTomorrowDateTimeLocal = () => {
+  const date = new Date(Date.now() + 86400000);
+  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+  return date.toISOString().slice(0, 16);
+};
+
+const initialDrawForm = {
+  type: 'DAILY',
+  drawDate: getTomorrowDateTimeLocal(),
+  ticketPrice: '20',
+  jackpotAmount: '5000000',
+};
 
 const DrawsPage = () => {
   const [draws, setDraws] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [form, setForm] = useState(initialDrawForm);
+  const [formError, setFormError] = useState('');
+  const [creating, setCreating] = useState(false);
 
   const fetchDraws = async () => {
     try {
@@ -34,15 +53,55 @@ const DrawsPage = () => {
     return () => sse.close();
   }, []);
 
-  const handleCreateDraw = async () => {
+  const updateForm = (field, value) => {
+    setForm(prev => ({ ...prev, [field]: value }));
+    setFormError('');
+  };
+
+  const handleOpenCreate = () => {
+    setForm(initialDrawForm);
+    setFormError('');
+    setIsCreateOpen(true);
+  };
+
+  const handleCreateDraw = async (event) => {
+    event.preventDefault();
+    const ticketPrice = Number(form.ticketPrice);
+    const jackpotAmount = Number(form.jackpotAmount);
+    const drawDate = new Date(form.drawDate);
+
+    if (!form.type) {
+      setFormError('Select a draw type.');
+      return;
+    }
+    if (Number.isNaN(drawDate.getTime()) || drawDate <= new Date()) {
+      setFormError('Draw date must be a valid future date and time.');
+      return;
+    }
+    if (!Number.isFinite(ticketPrice) || ticketPrice <= 0) {
+      setFormError('Ticket price must be greater than zero.');
+      return;
+    }
+    if (!Number.isFinite(jackpotAmount) || jackpotAmount < 0) {
+      setFormError('Jackpot amount cannot be negative.');
+      return;
+    }
+
     try {
+      setCreating(true);
       await drawService.createDraw({
         drawId: `DRAW-${Date.now().toString().slice(-6)}`,
-        drawDate: new Date(Date.now() + 86400000).toISOString(), // Tomorrow
-        ticketPrice: 20
+        type: form.type,
+        drawDate: drawDate.toISOString(),
+        ticketPrice,
+        jackpotAmount,
       });
+      setIsCreateOpen(false);
+      await fetchDraws();
     } catch (e) {
-      alert('Failed to create draw');
+      setFormError(e.response?.data?.message || 'Failed to create draw.');
+    } finally {
+      setCreating(false);
     }
   };
 
@@ -71,10 +130,92 @@ const DrawsPage = () => {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: 0, color: 'var(--text-main)' }}>Lottery Draws</h1>
-        <Button onClick={handleCreateDraw} icon={<Plus size={18} />}>
-          Create Next Draw
+        <Button onClick={handleOpenCreate} icon={<Plus size={18} />}>
+          Create Draw
         </Button>
       </div>
+
+      <Modal isOpen={isCreateOpen} onClose={() => !creating && setIsCreateOpen(false)} title="Create Lottery Draw" maxWidth="640px">
+        <form onSubmit={handleCreateDraw} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: '1rem'
+          }}>
+            <div className="input-wrapper">
+              <label className="input-label" htmlFor="draw-type">Draw Type</label>
+              <div className="input-field-group with-icon">
+                <div className="input-icon"><Ticket size={18} /></div>
+                <select
+                  id="draw-type"
+                  className="input-field"
+                  value={form.type}
+                  onChange={(event) => updateForm('type', event.target.value)}
+                  required
+                >
+                  <option value="DAILY">Daily</option>
+                  <option value="WEEKLY">Weekly</option>
+                  <option value="SPECIAL">Special</option>
+                </select>
+              </div>
+            </div>
+
+            <Input
+              label="Draw Date & Time"
+              type="datetime-local"
+              icon={Calendar}
+              value={form.drawDate}
+              min={new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)}
+              onChange={(event) => updateForm('drawDate', event.target.value)}
+              required
+            />
+
+            <Input
+              label="Ticket Price"
+              type="number"
+              min="1"
+              step="1"
+              icon={DollarSign}
+              value={form.ticketPrice}
+              onChange={(event) => updateForm('ticketPrice', event.target.value)}
+              required
+            />
+
+            <Input
+              label="Jackpot Amount"
+              type="number"
+              min="0"
+              step="100"
+              icon={Trophy}
+              value={form.jackpotAmount}
+              onChange={(event) => updateForm('jackpotAmount', event.target.value)}
+              required
+            />
+          </div>
+
+          {formError && (
+            <div style={{
+              padding: '0.875rem 1rem',
+              borderRadius: '0.75rem',
+              background: 'var(--error-bg)',
+              color: 'var(--error)',
+              fontWeight: 600,
+              fontSize: '0.875rem'
+            }}>
+              {formError}
+            </div>
+          )}
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.5rem' }}>
+            <Button type="button" variant="secondary" onClick={() => setIsCreateOpen(false)} disabled={creating}>
+              Cancel
+            </Button>
+            <Button type="submit" isLoading={creating} icon={<Plus size={18} />}>
+              Create Draw
+            </Button>
+          </div>
+        </form>
+      </Modal>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
         {loading ? (
