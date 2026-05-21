@@ -25,6 +25,8 @@ const Sidebar = ({ isOpen, toggleSidebar, isCollapsed, onCollapseToggle }) => {
     { name: 'Live Feed', path: '/activities', icon: <Bell size={20} /> },
     { name: 'System Logs', path: '/logs', icon: <ShieldAlert size={20} /> },
     { name: 'Payments', path: '/payments', icon: <CreditCard size={20} /> },
+    { name: 'Recovery', path: '/recovery', icon: <ShieldAlert size={20} /> },
+    { name: 'DLQ Viewer', path: '/dlq', icon: <ShieldAlert size={20} /> },
     { name: 'Settings', path: '/settings', icon: <Settings size={20} /> },
   ];
 

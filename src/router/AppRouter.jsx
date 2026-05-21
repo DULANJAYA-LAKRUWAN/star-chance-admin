@@ -15,6 +15,8 @@ import DrawsPage from '../pages/DrawsPage';
 import ActivitiesPage from '../pages/ActivitiesPage';
 import LogsPage from '../pages/LogsPage';
 import PaymentsPage from '../pages/PaymentsPage';
+import RecoveryDashboardPage from '../pages/RecoveryDashboardPage';
+import DLQViewerPage from '../pages/DLQViewerPage';
 import SettingsPage from '../pages/SettingsPage';
 
 const PrivateRoute = ({ children }) => {
@@ -90,6 +92,8 @@ const AppRouter = () => {
           <Route path="activities" element={<ActivitiesPage />} />
           <Route path="logs" element={<LogsPage />} />
           <Route path="payments" element={<PaymentsPage />} />
+          <Route path="recovery" element={<RecoveryDashboardPage />} />
+          <Route path="dlq" element={<DLQViewerPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
 
