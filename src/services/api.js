@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Ensure this matches your NestJS backend port
-export const API_BASE_URL = 'http://localhost:7747';
+export const API_BASE_URL = 'https://star-chance-backend-o9ub.vercel.app' ||  'http://localhost:7747'; // Use 7747 for local backend
 
 const api = axios.create({
   baseURL: API_BASE_URL,
