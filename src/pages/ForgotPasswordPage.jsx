@@ -25,7 +25,7 @@ const ForgotPasswordPage = () => {
     try {
       setLoading(true);
       setError('');
-      await api.post('/auth/forgot-password', { email });
+      await api.post('/auth/request-password-reset', { email });
       setStep(2);
       showToast('OTP sent to your email', 'success');
     } catch (err) {
